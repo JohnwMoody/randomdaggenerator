@@ -1,0 +1,271 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="settings">
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-cogs"></i> DAG Settings
+        </div>
+        <div class="card-body">
+            <div class="col-12">
+                Nodes:
+            </div>
+            <div class="col-7 offset-1 d-inline">
+                <input id="nodes" type="text" class="slider" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="10" data-slider-value="50" />
+            </div>
+            <div class="col-1 d-inline">
+                <span id="nodeCount">200</span>
+            </div>
+            <div class="col-12">
+                Edges:
+            </div>
+            <div class="col-7 offset-1 d-inline">
+                <input id="edges" type="text" class="slider" value="" data-slider-min="1" data-slider-max="10" data-slider-step="1" data-slider-value="[1,10]" />
+            </div>
+            <div class="col-1 d-inline">
+                <span id="edgeCountMin">1</span>-<span id="edgeCountMax">10</span>
+            </div>
+            <div class="col-12">
+                Communication Time:
+            </div>
+            <div class="col-7 offset-1 d-inline">
+                <input id="communication" type="text" class="slider" value="" data-slider-min="1" data-slider-max="50" data-slider-step="1" data-slider-value="[5,20]" />
+            </div>
+            <div class="col-1 d-inline">
+                <span id="commMin">5</span>-<span id="commMax">20</span>
+            </div>
+            <div class="col-12">
+                Computation Time:
+            </div>
+            <div class="col-7 offset-1 d-inline">
+                <input id="computation" type="text" class="slider" value="" data-slider-min="1" data-slider-max="50" data-slider-step="1" data-slider-value="[5,30]" />
+            </div>
+            <div class="col-1 d-inline">
+                <span id="compMin">5</span>-<span id="compMax">20</span>
+            </div>
+            <div class="col-12">
+                Layer Count:
+            </div>
+            <div class="col-7 offset-1 d-inline">
+                <input id="layers" type="text" class="slider" value="" data-slider-min="1" data-slider-max="200" data-slider-step="10" data-slider-value="[20,30]" />
+            </div>
+            <div class="col-1 d-inline">
+                <span id="layersMin">5</span>-<span id="layersMax">20</span>
+            </div>
+            <div class="col-12 mt-1">
+                Calculate critical path:
+                <input type="checkbox" id="criticalPath" />
+                <label for="criticalPath" data-toggle="tooltip" data-placement="right" title="This will affect the loading time of the DAG. Less than 120 nodes is reasonable."></label>
+            </div>
+            <button type="button" class="btn btn-outline-success col-12 mt-3" id="generate">Generate</button>
+        </div>
+    </div>
+    <div class="card mt-2 border-danger">
+        <div class="card-header">
+            <i class="fas fa-exclamation-circle"></i> Warnings/Errors
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">
+                Performance Warnings
+            </h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-item">High number of nodes</li>
+                <li class="list-item">Low number of layers and high node count</li>
+                <li class="list-item">Calculating critical path with high node count.</li>
+            </ul>
+            <h5 class="card-title mt-1">Errors</h5>
+            <ul class="list-group list-group-flush">
+                <li class="list-item">Critical edge colours, see: <a href="https://github.com/almende/vis/issues/3918">3918</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="mynetwork">
+    <!-- Graph render -->
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $("#generate").click(function () {
+            var settings = {};
+            settings.nodes = $("#nodeCount").text();
+            settings.minEdges = $("#edgeCountMin").text();
+            settings.maxEdges = $("#edgeCountMax").text();
+            settings.minComm = $("#commMin").text();
+            settings.maxComm = $("#commMax").text();
+            settings.minComp = $("#compMin").text();
+            settings.maxComp = $("#compMax").text();
+            settings.minLayers = $("#layersMin").text();
+            settings.maxLayers = $("#layersMax").text();
+            settings.criticalPath = $("#criticalPath")[0].checked;
+            console.log(settings);
+            $.ajax({
+                type: 'POST',
+                data: '{settings: ' + JSON.stringify(settings) + '}',
+                contentType: 'application/json; charset=utf-8;',
+                dataType: 'JSON',
+                beforeSend: function () {
+                    $.LoadingOverlay("show");
+                },
+                url: '/Home/GetDag',
+                success: function (returnVals) {
+                    network.setData({ nodes: new vis.DataSet(returnVals.nodes), edges: new vis.DataSet(returnVals.edges) });
+                    network.once('stabilized', function () {
+                        network.focus(0, { scale: 1.5, offset: { x: 0, y: -$("#mynetwork").height() / 2 + 30 }, animation: true });
+                    })
+                    $.LoadingOverlay('hide', true);
+                },
+            });
+        });
+
+        $("#edges").slider({
+            id: "edges",
+            tooltip: 'hide',
+            value: [1, 10],
+            formatter: function (value) {
+                return 'Max edges: ' + value;
+            }
+        })
+        $("#nodes").slider({
+            id: "nodes",
+            tooltip: 'hide',
+            value: 200,
+            formatter: function (value) {
+                return 'Nodes: ' + value;
+            }
+        });
+        $("#communication").slider({
+            id: "communication",
+            tooltip: 'hide',
+            value: [5, 20],
+            formatter: function (value) {
+                return 'Nodes: ' + value;
+            }
+        });
+        $("#computation").slider({
+            id: "computation",
+            tooltip: 'hide',
+            value: [5, 30],
+            formatter: function (value) {
+                return 'Nodes: ' + value;
+            }
+        });
+
+        var layersSlider = $("#layers").slider({
+            id: "layers",
+            tooltip: 'hide',
+            value: [20, 30],
+            max: 200,
+            formatter: function (value) {
+                return 'layers: ' + value;
+            }
+        });
+
+        $("#layers").on('slide', function (slideEvt) {
+            $("#layersMin").html(slideEvt.value[0]);
+            $("#layersMax").html(slideEvt.value[1]);
+        })
+
+        $("#computation").on('slide', function (slideEvt) {
+            $("#compMin").html(slideEvt.value[0]);
+            $("#compMax").html(slideEvt.value[1]);
+        })
+
+        $("#communication").on('slide', function (slideEvt) {
+            $("#commMin").html(slideEvt.value[0]);
+            $("#commMax").html(slideEvt.value[1]);
+        })
+
+        $("#nodes").on('slide', function (slideEvt) {
+            var nodeCount = slideEvt.value;
+            var layersMax = layersSlider[0].value.split(',')[1];
+            $("#nodeCount").html(nodeCount);
+            layersSlider.slider('setAttribute', 'max', nodeCount);
+            if (nodeCount < layersMax) {
+                layersSlider.slider('setValue', [nodeCount/10, nodeCount]);
+            } else {
+                layersSlider.slider('setValue', [parseInt(nodeCount / 10), parseInt(nodeCount)]);
+            }
+            $("#layersMin").html(nodeCount / 10);
+            $("#layersMax").html(nodeCount);
+        });
+        $("#edges").on('slide', function (slideEvt) {
+            $("#edgeCountMin").html(slideEvt.value[0]);
+            $("#edgeCountMax").html(slideEvt.value[1]);
+
+        })
+    })
+
+    var data = {};
+    var options = {
+        locale: 'en',
+        autoResize: true,
+        height: '100%',
+        width: '100%',
+        clickToUse: false,
+        edges: {
+            arrowStrikethrough: false,
+            arrows: {
+                to: { enabled: true, scaleFactor: 1, type: 'arrow' },
+                middle: { enabled: false, scaleFactor: 1, type: 'arrow' },
+                from: { enabled: false, scaleFactor: 1, type: 'arrow' }
+            },
+            hoverWidth: 0.1,
+            selectionWidth: 1,
+            smooth: {
+                enabled: true
+            },
+            width: 0.75,
+        },
+        nodes: {
+            shape: 'box',
+            shapeProperties: {
+                borderRadius: 0
+            }
+        },
+        layout: {
+            improvedLayout: true,
+            hierarchical: {
+                enabled: true,
+                edgeMinimization: false,
+                parentCentralization: true,
+                direction: 'UD',        // UD, DU, LR, RL
+                sortMethod: 'directed'   // hubsize, directed
+            }
+        },
+        interaction: {
+            selectConnectedEdges: true,
+            hover: true,
+            hoverConnectedEdges: false
+        },
+        physics: {
+            enabled: true,
+        }
+    };
+
+    $.LoadingOverlaySetup({
+        background: "rgba(0, 0, 0, 0.5)",
+        image: "../dist/img/loader.svg",
+    });
+
+    var network = new vis.Network(document.getElementById('mynetwork'), data, options);
+
+    $(document).ready(function () {
+        $.ajax({
+            type: 'POST',
+            data: '',
+            contentType: 'application/json; charset=utf-8;',
+            dataType: 'JSON',
+            url: '/Home/GetDefaultDag',
+            success: function (returnVals) {
+                network.setData({ nodes: new vis.DataSet(returnVals.nodes), edges: new vis.DataSet(returnVals.edges) });
+                network.once('stabilized', function () {
+                    network.focus(0, { scale: 1.5, offset: { x: 0, y: -$("#mynetwork").height() / 2 + 30 }, animation: true });
+                });
+
+            },
+        });
+    });
+</script>
