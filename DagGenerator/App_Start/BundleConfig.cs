@@ -24,6 +24,10 @@ namespace DagGenerator
                 "~/dist/css/bootstrap-slider.min.css",
                 "~/dist/css/style.css"
                 ));
+
+            bundles.Add(new ScriptBundle("~/bundles/index").Include(
+                "~/dist/scripts/index/index.js"
+                ));
         }
     }
 }

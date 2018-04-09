@@ -174,6 +174,7 @@
     <Content Include="dist\img\loader.svg" />
     <Content Include="dist\scripts\bootstrap-slider.js" />
     <Content Include="dist\scripts\bootstrap.min.js" />
+    <Content Include="dist\scripts\Index\Index.js" />
     <Content Include="dist\scripts\jquery.min.js" />
     <Content Include="dist\scripts\loadingoverlay.min.js" />
     <Content Include="dist\scripts\popper.min.js" />
