@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27428.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DagGenerator", "DagGenerator\DagGenerator.csproj", "{15307657-490C-45F5-8D5B-2A5B8BBB5D13}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DagGeneratorLibrary", "DagGeneratorLibrary\DagGeneratorLibrary.csproj", "{17E703B3-7DEF-4F5F-8D50-EFB22C646CB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{15307657-490C-45F5-8D5B-2A5B8BBB5D13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15307657-490C-45F5-8D5B-2A5B8BBB5D13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15307657-490C-45F5-8D5B-2A5B8BBB5D13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17E703B3-7DEF-4F5F-8D50-EFB22C646CB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17E703B3-7DEF-4F5F-8D50-EFB22C646CB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17E703B3-7DEF-4F5F-8D50-EFB22C646CB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17E703B3-7DEF-4F5F-8D50-EFB22C646CB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

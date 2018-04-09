@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace DagGenerator.App_Code
+namespace DagGeneratorLibrary
 {
     public class Dag
     {

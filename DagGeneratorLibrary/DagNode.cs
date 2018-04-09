@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 
-namespace DagGenerator.App_Code
+namespace DagGeneratorLibrary
 {
     public class DagNode : IComparable<DagNode>
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace DagGenerator.App_Code
+namespace DagGeneratorLibrary
 {
     public class DagEdge : IComparable<DagEdge>
     {

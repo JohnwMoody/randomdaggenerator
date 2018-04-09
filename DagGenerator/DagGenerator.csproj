@@ -150,15 +150,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Code\Dag.cs" />
-    <Compile Include="App_Code\DagEdge.cs" />
-    <Compile Include="App_Code\DagGenerate.cs" />
-    <Compile Include="App_Code\DagInformation.cs" />
-    <Compile Include="App_Code\DagNode.cs" />
     <Compile Include="App_Code\DagSetup.cs" />
-    <Compile Include="App_Code\VisSupport\NodesDataSet.cs" />
-    <Compile Include="App_Code\VisSupport\EdgesDataSet.cs" />
-    <Compile Include="App_Code\VisSupport\VisInfoHolder.cs" />
+    <Compile Include="App_Code\NodesDataSet.cs" />
+    <Compile Include="App_Code\EdgesDataSet.cs" />
+    <Compile Include="App_Code\VisInfoHolder.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -216,6 +211,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DagGeneratorLibrary\DagGeneratorLibrary.csproj">
+      <Project>{17e703b3-7def-4f5f-8d50-efb22c646cb6}</Project>
+      <Name>DagGeneratorLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
