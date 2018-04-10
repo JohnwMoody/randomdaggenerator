@@ -122,6 +122,11 @@
 
     network.on('hoverNode', function (props) {
         var ids = props.node;
+        $("#currentNode").html(ids);
+        $("#CompNode").html(network.body.data.nodes.get(ids).label);
+        $("#CriticalNode").html(network.body.data.nodes.get(ids).color == 'rgba(40, 178, 6, 0.8)' ? 'Yes' : 'No');
+        $("#PrevEdgeNode").html(network.getConnectedNodes(ids, 'from').length);
+        $("#NextEdgeNode").html(network.getConnectedNodes(ids, 'to').length);
         console.log(ids);
     })
 });
