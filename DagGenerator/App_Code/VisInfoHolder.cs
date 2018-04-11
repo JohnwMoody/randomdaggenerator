@@ -9,5 +9,6 @@ namespace DagGenerator.App_Code.VisSupport
     {
         public List<NodesDataSet> nodes { get; set; }
         public List<EdgesDataSet> edges { get; set; }
+        public DagInfo Info {get;set;}
     }
 }

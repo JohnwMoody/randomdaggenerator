@@ -9,8 +9,7 @@ namespace DagGenerator.App_Code
     public class DagSetup
     {
         public Settings Settings { get; set; }
-        public int TotalCriticalPathTime { get; private set; } = 0;
-        private DagGenerate dg = new DagGenerate();
+        private DagGenerate dg { get; set; }
         public VisInfoHolder CreateDag()
         {
             dg = new DagGenerate
@@ -48,9 +47,10 @@ namespace DagGenerator.App_Code
                 foreach (DagNode nextNode in node.GetNextNodes())
                 {
                     bool CpEdge = (node.CriticalPath && nextNode.CriticalPath);
-                    vih.edges.Add(new EdgesDataSet { from = node.Id, to = nextNode.Id, color = CpEdge ? "rgba(40, 178, 6, 0.8)" : "rgba(167, 162, 162, 0.65)", label = d.FindEdge(node, nextNode)?.CommTime.ToString() });
+                    vih.edges.Add(new EdgesDataSet { from = node.Id, to = nextNode.Id, color = new Color { color = CpEdge ? "rgba(40, 178, 6, 0.8)" : "rgba(167, 162, 162, 0.65)" }, label = d.FindEdge(node, nextNode)?.CommTime.ToString() });
                 }
             }
+            vih.Info = new DagInfo { Nodes = nodes.Count, Edges = d.GetDagEdgeSet().Count, CpTime = d.CpTime };
             return vih;
         }
     }

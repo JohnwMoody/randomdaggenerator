@@ -5,6 +5,15 @@
 <div class="settings">
     <div class="card">
         <div class="card-header">
+            <i class="fas fa-question"></i> About DAG Generator
+        </div>
+        <div class="card-body">
+            <p>A simple DAG (Directed Acyrlic Graph) Generator.</p>
+            <p>The Critical Path Algorithm is then applied to find the earliest possible finish time. This is denoted by the green lines. </p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
             <i class="fas fa-cogs"></i> DAG Settings
         </div>
         <div class="card-body">
@@ -73,6 +82,10 @@
             Previous Edges: <span id="PrevEdgeNode" class="font-weight-bold"></span><br />
             Next Edges: <span id="NextEdgeNode" class="font-weight-bold"></span><br />
             Critical Node: <span id="CriticalNode" class="font-weight-bold"></span><br />
+            <hr class="col-xs-12">
+            Number of Nodes: <span id="DagNodes" class="font-weight-bold"></span><br />
+            Number of Edges: <span id="DagEdges" class="font-weight-bold"></span><br />
+            Earliest Possible Finish: <span id="DagEPF" class="font-weight-bold"></span>
         </div>
     </div>
     <div class="card mt-2 border-danger">

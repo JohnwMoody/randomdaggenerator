@@ -1,4 +1,5 @@
-﻿$(document).ready(function () {
+﻿var info = {};
+$(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
 
     $("#generate").click(function () {
@@ -13,24 +14,7 @@
         settings.minLayers = $("#layersMin").text();
         settings.maxLayers = $("#layersMax").text();
         settings.criticalPath = $("#criticalPath")[0].checked;
-        console.log(settings);
-        $.ajax({
-            type: 'POST',
-            data: '{settings: ' + JSON.stringify(settings) + '}',
-            contentType: 'application/json; charset=utf-8;',
-            dataType: 'JSON',
-            beforeSend: function () {
-                $.LoadingOverlay("show");
-            },
-            url: '/Home/GetDag',
-            success: function (returnVals) {
-                network.setData({ nodes: new vis.DataSet(returnVals.nodes), edges: new vis.DataSet(returnVals.edges) });
-                network.once('stabilized', function () {
-                    network.focus(0, { scale: 1.5, offset: { x: 0, y: -$("#mynetwork").height() / 2 + 30 }, animation: true });
-                });
-                $.LoadingOverlay('hide', true);
-            }
-        });
+        callDagAjax('/Home/GetDag', '{ settings: ' + JSON.stringify(settings) + ' }');
     });
 
     $("#edges").slider({
@@ -75,7 +59,6 @@
             return 'layers: ' + value;
         }
     });
-
     $("#layers").on('slide', function (slideEvt) {
         $("#layersMin").html(slideEvt.value[0]);
         $("#layersMax").html(slideEvt.value[1]);
@@ -94,40 +77,28 @@
         $("#nodeCount").html(nodeCount);
         layersSlider.slider('setAttribute', 'max', nodeCount);
         if (nodeCount < layersMax) {
-            layersSlider.slider('setValue', [nodeCount / 10, nodeCount]);
+            layersSlider.slider('setValue', [nodeCount / 3, nodeCount/2]);
         } else {
-            layersSlider.slider('setValue', [parseInt(nodeCount / 10), parseInt(nodeCount)]);
+            layersSlider.slider('setValue', [parseInt(nodeCount / 3), parseInt(nodeCount/2)]);
         }
         $("#layersMin").html(nodeCount / 10);
         $("#layersMax").html(nodeCount);
     });
+
     $("#edges").on('slide', function (slideEvt) {
         $("#edgeCountMin").html(slideEvt.value[0]);
         $("#edgeCountMax").html(slideEvt.value[1]);
+    });
 
-    });
-    $.ajax({
-        type: 'POST',
-        data: '',
-        contentType: 'application/json; charset=utf-8;',
-        dataType: 'JSON',
-        url: '/Home/GetDefaultDag',
-        success: function (returnVals) {
-            network.setData({ nodes: new vis.DataSet(returnVals.nodes), edges: new vis.DataSet(returnVals.edges) });
-            network.once('stabilized', function () {
-                network.focus(0, { scale: 1.5, offset: { x: 0, y: -$("#mynetwork").height() / 2 + 30 }, animation: true });
-            });
-        }
-    });
+    callDagAjax('/Home/GetDefaultDag', '{}');
 
     network.on('hoverNode', function (props) {
         var ids = props.node;
         $("#currentNode").html(ids);
         $("#CompNode").html(network.body.data.nodes.get(ids).label);
-        $("#CriticalNode").html(network.body.data.nodes.get(ids).color == 'rgba(40, 178, 6, 0.8)' ? 'Yes' : 'No');
+        $("#CriticalNode").html(network.body.data.nodes.get(ids).color === 'rgba(40, 178, 6, 0.8)' ? 'Yes' : 'No');
         $("#PrevEdgeNode").html(network.getConnectedNodes(ids, 'from').length);
         $("#NextEdgeNode").html(network.getConnectedNodes(ids, 'to').length);
-        console.log(ids);
     })
 });
 
@@ -184,5 +155,28 @@ $.LoadingOverlaySetup({
     background: "rgba(0, 0, 0, 0.5)",
     image: "../dist/img/loader.svg"
 });
+
+function callDagAjax(callURL, data) {
+    $.ajax({
+        type: 'POST',
+        data: data,
+        contentType: 'application/json; charset=utf-8;',
+        dataType: 'JSON',
+        beforeSend: function () {
+            $.LoadingOverlay("show");
+        },
+        url: callURL,
+        success: function (returnVals) {
+            network.setData({ nodes: new vis.DataSet(returnVals.nodes), edges: new vis.DataSet(returnVals.edges) });
+            network.once('stabilized', function () {
+                network.focus(0, { scale: 1.5, offset: { x: 0, y: -$("#mynetwork").height() / 2 + 30 }, animation: true });
+            });
+            $.LoadingOverlay('hide', true);
+            $("#DagNodes").html(returnVals.Info.Nodes);
+            $("#DagEdges").html(returnVals.Info.Edges);
+            $("#DagEPF").html(returnVals.Info.CpTime);
+        }
+    });
+}
 
 var network = new vis.Network(document.getElementById('mynetwork'), data, options);

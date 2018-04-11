@@ -6,16 +6,14 @@ namespace DagGeneratorLibrary
     public class Dag
     {
         private DagInformation dagInformation;
-        public int CpTime { get;  private set; } = 0;
+        public int CpTime { get; private set; } = 0;
         public List<DagEdge> CriticalNodes { get; private set; }
         public List<DagNode> GraphNodes { set; get; }
-        private  HashSet<DagEdge> DagEdgeSet = new HashSet<DagEdge>();
-
+        private HashSet<DagEdge> DagEdgeSet { get; set; }  = new HashSet<DagEdge>();
         public Dag(DagInformation dagInformation)
         {
             this.dagInformation = dagInformation;
         }
-
         public DagEdge InsertEdge(DagNode prevNode, DagNode nextNode, int commTime)
         {
             DagEdge newEdge = FindEdge(prevNode, nextNode);
@@ -89,27 +87,6 @@ namespace DagGeneratorLibrary
                 }
             }
             return DagEdgeSet;
-        }
-
-        public HashSet<DagNode> GetNodes()
-        {
-            HashSet<DagNode> nodes = new HashSet<DagNode>();
-           
-            return nodes;
-        }
-
-        public string ToString()
-        {
-            StringBuilder str = new StringBuilder();
-            List<DagNode> nodes = new List<DagNode>(GetNodes());
-            nodes.Sort();
-            str.Append(nodes.Count).Append("\n");
-            foreach (DagNode node in nodes)
-            {
-                node.UpdateDependencies();
-                str.Append(node.ToString());
-            }
-            return str.ToString();
         }
     }
 }

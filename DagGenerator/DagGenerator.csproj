@@ -150,6 +150,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Code\DagInfo.cs" />
     <Compile Include="App_Code\DagSetup.cs" />
     <Compile Include="App_Code\NodesDataSet.cs" />
     <Compile Include="App_Code\EdgesDataSet.cs" />
